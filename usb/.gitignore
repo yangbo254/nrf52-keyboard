@@ -1,28 +1,15 @@
+# dot files
+/.vscode/launch.json
+/.settings
+/.eide/log
+/.eide.usr.ctx.json
 
-# Created by https://www.gitignore.io/api/sdcc,codeblocks
+# project out
+/build
+/bin
+/obj
+/out
 
-### CodeBlocks ###
-# specific to CodeBlocks IDE
-*.layout
-*.depend
-
-# generated directories
-bin/
-obj/
-
-### Sdcc ###
-# SDCC stuff
-*.lnk
-*.lst
-*.map
-*.mem
-*.rel
-*.rst
-*.sym
-*.hex
-*.ihx
-*.bin
-*.dep
-*.d
-*.lk
-# End of https://www.gitignore.io/api/sdcc,codeblocks
+# eide template
+*.ept
+*.eide-template

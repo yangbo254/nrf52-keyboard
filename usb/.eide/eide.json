@@ -1,0 +1,107 @@
+{
+  "name": "usb",
+  "type": "C51",
+  "dependenceList": [],
+  "srcDirs": [],
+  "virtualFolder": {
+    "name": "<virtual_root>",
+    "files": [],
+    "folders": [
+      {
+        "name": "Application",
+        "files": [
+          {
+            "path": "src/DAP_hid.c"
+          },
+          {
+            "path": "src/DAP.c"
+          },
+          {
+            "path": "src/descriptor.c"
+          },
+          {
+            "path": "src/endpoints.c"
+          },
+          {
+            "path": "src/interrupt.c"
+          },
+          {
+            "path": "src/main.c"
+          },
+          {
+            "path": "src/SW_DP.c"
+          },
+          {
+            "path": "src/system.c"
+          },
+          {
+            "path": "src/uart.c"
+          }
+        ],
+        "folders": []
+      }
+    ]
+  },
+  "outDir": "build",
+  "deviceName": null,
+  "packDir": null,
+  "miscInfo": {
+    "uid": "2cc78b437217d8d8748ac59365a1a52f"
+  },
+  "targets": {
+    "Debug": {
+      "excludeList": [
+        "<virtual_root>/Application/DAP_hid.c",
+        "<virtual_root>/Application/DAP.c",
+        "<virtual_root>/Application/SW_DP.c"
+      ],
+      "toolchain": "SDCC",
+      "compileConfig": {
+        "options": "null"
+      },
+      "uploader": "Custom",
+      "uploadConfig": {
+        "bin": ".\\build\\Debug\\ch554_Demo.hex",
+        "commandLine": "wchisptool -g -f ${hexFile}",
+        "eraseChipCommand": ""
+      },
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "inc"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": [
+          "FREQ_SYS=24000000"
+        ]
+      }
+    },
+    "DAP": {
+      "excludeList": [],
+      "toolchain": "SDCC",
+      "compileConfig": {
+        "options": "null"
+      },
+      "uploader": "Custom",
+      "uploadConfig": {
+        "bin": ".\\build\\Debug\\ch554_DAP.hex",
+        "commandLine": "wchisptool -g -f ${hexFile}",
+        "eraseChipCommand": ""
+      },
+      "custom_dep": {
+        "name": "default",
+        "incList": [
+          "inc"
+        ],
+        "libList": [],
+        "sourceDirList": [],
+        "defineList": [
+          "FREQ_SYS=24000000",
+          "ONBOARD_CMSIS_DAP"
+        ]
+      }
+    }
+  },
+  "version": "3.3"
+}

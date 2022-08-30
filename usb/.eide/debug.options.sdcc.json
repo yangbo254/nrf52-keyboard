@@ -1,0 +1,32 @@
+{
+    "version": 3,
+    "beforeBuildTasks": [],
+    "afterBuildTasks": [
+        {
+            "name": "clean",
+            "command": "cd \"${OutDir}\" && del *.sym *.cdb *.adb *._*"
+        }
+    ],
+    "global": {
+        "device": "mcs51",
+        "optimize-type": "size",
+        "device-options": {
+            "mcs51": [
+                "--model-small",
+                "--xram-size 0x0400",
+                "--code-size 0x3800"
+            ]
+        },
+        "stack-auto": true
+    },
+    "c/cpp-compiler": {
+        "language-c": "c11",
+        "misc-controls": "--model-small --disable-warning 182"
+    },
+    "asm-compiler": {},
+    "linker": {
+        "$mainFileName": "main",
+        "output-format": "hex",
+        "misc-controls": "--xram-size 1024 --iram-size 256 --code-size 14336 --xram-loc 0x0000"
+    }
+}
