@@ -33,7 +33,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * 0x80-0xBF 端点4 IN
  *
  */
-volatile uint8_t __XDATA Ep0Buffer[MAX_PACKET_SIZE * 3];
+volatile __XDATA /*__at (MAX_PACKET_SIZE * 0)*/ uint8_t Ep0Buffer[MAX_PACKET_SIZE * 3];
 /**
  * @brief 端点1缓冲区，用于键盘报文
  *
@@ -41,17 +41,17 @@ volatile uint8_t __XDATA Ep0Buffer[MAX_PACKET_SIZE * 3];
  * 地址0xC8-0xCF为端点1IN缓冲区 (8byte)
  *
  */
-volatile uint8_t __XDATA Ep1Buffer[MAX_PACKET_SIZE * 2]; //端点1 IN缓冲区,必须是偶地址
+volatile __XDATA /*__at (MAX_PACKET_SIZE * 3)*/ uint8_t  Ep1Buffer[MAX_PACKET_SIZE * 2]; //端点1 IN缓冲区,必须是偶地址
 /**
  * @brief 端点2IN缓冲区，用于System包和Consumer包的发送
  *
  */
-volatile uint8_t __XDATA Ep2Buffer[MAX_PACKET_SIZE];
+volatile __XDATA  /*__at (MAX_PACKET_SIZE * 5)*/ uint8_t Ep2Buffer[MAX_PACKET_SIZE];
 /**
  * @brief 端点3IN&OUT缓冲区，用于传递配置
  *
  */
-volatile uint8_t __XDATA Ep3Buffer[MAX_PACKET_SIZE * 2]; //端点3 IN缓冲区,必须是偶地址
+volatile __XDATA /*__at (MAX_PACKET_SIZE * 6)*/ uint8_t Ep3Buffer[MAX_PACKET_SIZE * 2]; //端点3 IN缓冲区,必须是偶地址
 
 static uint8_t DataInLen, UsbConfig, UsbAddr;
 static uint8_t* pDataIn;
@@ -94,13 +94,21 @@ void EP0_OUT()
     case SETUP_IDLE:
         /* code */
         break;
+    case SETUP_DATA_IN:
+        UEP0_T_LEN = 0;
+		UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_ACK;  //状态阶段，对IN响应NAK
+        break;
+    case SETUP_DATA_OUT:
+        // 似乎没有下传的数据
+        break;
+    case SETUP_STATE_IN:
+        UEP0_T_LEN = 0;
+		UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_ACK;  //状态阶段，对IN响应NAK
+        break;
     case SETUP_STATE_OUT:
         // 重置端点状态，等待下次传输
         EP0_RESET();
         usb_state.setup_state = SETUP_IDLE;
-        break;
-    case SETUP_DATA_OUT:
-        // 似乎没有下传的数据
         break;
     default:
         // ERROR
@@ -127,7 +135,6 @@ void EP0_IN()
         UEP0_T_LEN = len;
         UEP0_CTRL ^= bUEP_T_TOG; //同步标志位翻转
         break;
-
     case SETUP_STATE_IN:
         // 延迟设置USB设备的地址
         if (UsbAddr) {
@@ -145,6 +152,7 @@ void EP0_IN()
         usb_state.setup_state = SETUP_IDLE;
         break;
     }
+    return;
 }
 void EP0_SETUP()
 {
@@ -152,6 +160,7 @@ void EP0_SETUP()
         SETUP_STALL();
         return;
     }
+    EP0_DATA1_ACK(); // 使用DATA1响应数据
     uint8_t datalen = 0;
     DataInLen = UsbSetupBuf->wLength > 0xFF ? 0xFF : UsbSetupBuf->wLength; // 限制总长度
     if (UsbSetupBuf->bmRequestType.Type == 0) //标准请求
@@ -337,7 +346,7 @@ void EP0_SETUP()
 
         UEP0_T_LEN = len;
         EP0_DATA1_ACK(); // 使用DATA1响应数据
-
+        
         if (DataInLen == 0)
             usb_state.setup_state = SETUP_STATE_OUT;
         break;
