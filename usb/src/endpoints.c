@@ -95,6 +95,7 @@ void EP0_OUT()
         /* code */
         break;
     case SETUP_DATA_IN:
+        // UEP0_CTRL ^= bUEP_R_TOG;
         UEP0_T_LEN = 0;
 		UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_ACK;  //状态阶段，对IN响应NAK
         break;
